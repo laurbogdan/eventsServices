@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+option java_outer_classname = "EventModel";
+option java_package="model";
+message Event {
+    optional int64 timestamp = 1;
+    optional string userId = 2;
+    optional string eventDescription = 3;
+}

@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+message Event {
+    optional int64 timestamp = 1;
+    optional string userId = 2;
+    optional string eventDescription = 3;
+}
+
+message Events {
+  repeated Event events = 1;
+}
