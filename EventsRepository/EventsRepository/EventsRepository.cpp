@@ -14,14 +14,13 @@
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
-// #pragma comment (lib, "Mswsock.lib")
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "9090"
 
 //LISTENONPORT – Listens on a specified port for incoming connections 
 //or data
-int ListenOnPort()
+void ListenOnPort()
 {
 	WSADATA wsaData;
 	int iResult;
@@ -32,15 +31,12 @@ int ListenOnPort()
 	struct addrinfo *result = NULL;
 	struct addrinfo hints;
 
-	int iSendResult;
-	char recvbuf[DEFAULT_BUFLEN];
 	int recvbuflen = DEFAULT_BUFLEN;
 
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
 		printf("WSAStartup failed with error: %d\n", iResult);
-		return 1;
 	}
 
 	ZeroMemory(&hints, sizeof(hints));
@@ -54,7 +50,6 @@ int ListenOnPort()
 	if (iResult != 0) {
 		printf("getaddrinfo failed with error: %d\n", iResult);
 		WSACleanup();
-		return 1;
 	}
 
 	// Create a SOCKET for connecting to server
@@ -63,7 +58,6 @@ int ListenOnPort()
 		printf("socket failed with error: %ld\n", WSAGetLastError());
 		freeaddrinfo(result);
 		WSACleanup();
-		return 1;
 	}
 
 	// Setup the TCP listening socket
@@ -73,7 +67,6 @@ int ListenOnPort()
 		freeaddrinfo(result);
 		closesocket(ListenSocket);
 		WSACleanup();
-		return 1;
 	}
 
 	freeaddrinfo(result);
@@ -83,7 +76,6 @@ int ListenOnPort()
 		printf("listen failed with error: %d\n", WSAGetLastError());
 		closesocket(ListenSocket);
 		WSACleanup();
-		return 1;
 	}
 
 	// Accept a client socket
@@ -94,7 +86,6 @@ int ListenOnPort()
 			printf("accept failed with error: %d\n", WSAGetLastError());
 			closesocket(ListenSocket);
 			WSACleanup();
-			return 1;
 		}
 
 		// Receive until the peer shuts down the connection
@@ -116,40 +107,13 @@ int ListenOnPort()
 				storedEvents.SerializeToOstream(&fo);
 				fo.close();
 				
-				std::cout << "Description:";
-				std::cout << event.eventdescription();
-				// Echo the buffer back to the sender
-			//	iSendResult = send(ClientSocket, recvbuf, iResult, 0);
-			//	if (iSendResult == SOCKET_ERROR) {
-				//	printf("send failed with error: %d\n", WSAGetLastError());
-				//	closesocket(ClientSocket);
-				//	WSACleanup();
-				//	return 1;
-				//}
-			//	printf("Bytes sent: %d\n", iSendResult);
+				std::cout << "Event received..." << std::endl;
 			}
-			else if (iResult == 0)
+			else if (iResult < 0)
 				printf("Connection closing...\n");
-			else {
-				closesocket(ClientSocket);
-				//WSACleanup();
-			}
+			    closesocket(ClientSocket);
 		} while (iResult > 0);
-	//	iResult = shutdown(ClientSocket, SD_SEND);
-		//if (iResult == SOCKET_ERROR) {
-		//	printf("shutdown failed with error: %d\n", WSAGetLastError());
-		//	closesocket(ClientSocket);
-		//	WSACleanup();
-		//}
 	}
-
-	// shutdown the connection since we're done
-
-	// cleanup
-	closesocket(ClientSocket);
-	WSACleanup();
-
-	return 0;
 }
 
 void printStoredEvents() {
@@ -168,10 +132,18 @@ void printStoredEvents() {
 
 int main(int argc, char** argv)
 {
-	if (argv[0] == "print") {
+
+	if (argc != 2) {
+		std::cout << "You need to supply one argument to this program.";
+		return -1;
+	}
+
+	if (strcmp(argv[1], "print_events") == 0) {
 		printStoredEvents();
 	}
-	if (argv[0] == "start_server") {
+	else if (strcmp(argv[1], "start_server") == 0) {
 		ListenOnPort();
 	}
+
+	return 0;
 }
