@@ -1,0 +1,11 @@
+com.konux.application
+com.konux.client
+com.konux.controller
+com.konux.converter
+com.konux.exception
+com.konux.facade
+com.konux.facade.impl
+com.konux.model
+com.konux.model.protobuf
+com.konux.service
+com.konux.service.impl
