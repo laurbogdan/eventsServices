@@ -20,6 +20,8 @@ II. Java EventsService
       
               java -jar eventsService-0.0.1-SNAPSHOT.jar
   
+  
+Also, in the target folder I've already added the exe and the jar files. If you don't want to build the projects, you can try to run them.
 
     
 
