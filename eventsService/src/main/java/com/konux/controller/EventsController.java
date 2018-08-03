@@ -1,5 +1,7 @@
 package com.konux.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,8 @@ import com.konux.model.Event;
 @Controller
 @RequestMapping("/events")
 public class EventsController {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(EventsController.class);
 
 	@Autowired
 	private EventsFacade eventsFacade;
@@ -29,6 +33,7 @@ public class EventsController {
 	@PostMapping("/add")
 	@ResponseStatus(HttpStatus.CREATED)
 	public @ResponseBody void greeting(@RequestBody Event event) throws RepositoryException {
+		LOG.info("New request for the event: " + event.getEvent());
 		eventsFacade.addEvent(event);
 	}
 

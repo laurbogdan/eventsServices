@@ -41,4 +41,20 @@ public class EventsRepositoryServiceClient {
 			throw new RepositoryException("Something went wrong. Could not add the event to repository.");
 		}
 	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
 }
